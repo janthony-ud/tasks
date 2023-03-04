@@ -134,14 +134,9 @@ export function publishAll(questions: Question[]): Question[] {
  * are the same type. They can be any type, as long as they are all the SAME type.
  */
 export function sameType(questions: Question[]): boolean {
-    return questions.filter(
-        (q: Question): boolean => q.type === "short_answer_question"
-    ).length === questions.length ||
-        questions.filter(
-            (q: Question): boolean => q.type === "short_answer_question"
-        ).length === 0
-        ? true
-        : false;
+    return questions.every(
+        (q: Question): boolean => q.type === questions[0].type
+    );
 }
 
 /***
@@ -155,7 +150,18 @@ export function addNewQuestion(
     name: string,
     type: QuestionType
 ): Question[] {
-    return [];
+    const newSet = questions.map((q: Question): Question => ({ ...q }));
+    newSet.push({
+        id,
+        name,
+        type,
+        body: "",
+        expected: "",
+        options: [],
+        points: 1,
+        published: false
+    });
+    return newSet;
 }
 
 /***
