@@ -174,7 +174,12 @@ export function renameQuestionById(
     targetId: number,
     newName: string
 ): Question[] {
-    return [];
+    return questions.map(
+        (q: Question): Question => ({
+            ...q,
+            name: q.id === targetId ? newName : q.name
+        })
+    );
 }
 
 /***
@@ -189,7 +194,17 @@ export function changeQuestionTypeById(
     targetId: number,
     newQuestionType: QuestionType
 ): Question[] {
-    return [];
+    return questions.map(
+        (q: Question): Question => ({
+            ...q,
+            type: q.id === targetId ? newQuestionType : q.type,
+            options:
+                q.id === targetId &&
+                newQuestionType !== "multiple_choice_question"
+                    ? []
+                    : q.options
+        })
+    );
 }
 
 /**
@@ -208,7 +223,17 @@ export function editOption(
     targetOptionIndex: number,
     newOption: string
 ): Question[] {
-    return [];
+    return questions.map(
+        (q: Question): Question => ({
+            ...q,
+            options:
+                q.id === targetId
+                    ? targetOptionIndex === -1
+                        ? [...q.options, newOption]
+                        : [...q.options].splice(targetOptionIndex, 1, newOption) //splice returns what's being deleted, so I need to figure out how to get the opposite of that.
+                    : q.options
+        })
+    );
 }
 
 /***
@@ -222,5 +247,15 @@ export function duplicateQuestionInArray(
     targetId: number,
     newId: number
 ): Question[] {
-    return [];
+    const newQuestions = questions.map((q: Question): Question => ({ ...q }));
+    const oldQuestionIndex = newQuestions.findIndex(
+        (q: Question): boolean => q.id === targetId
+    );
+    newQuestions.splice(oldQuestionIndex + 1, 0, {
+        ...newQuestions[oldQuestionIndex],
+        id: newId,
+        name: "Copy of " + newQuestions[oldQuestionIndex].name,
+        published: false
+    });
+    return newQuestions;
 }
