@@ -124,7 +124,9 @@ export function makeAnswers(questions: Question[]): Answer[] {
  * each question is now published, regardless of its previous published status.
  */
 export function publishAll(questions: Question[]): Question[] {
-    return [];
+    return questions.map(
+        (q: Question): Question => ({ ...q, published: true })
+    );
 }
 
 /***
@@ -132,7 +134,14 @@ export function publishAll(questions: Question[]): Question[] {
  * are the same type. They can be any type, as long as they are all the SAME type.
  */
 export function sameType(questions: Question[]): boolean {
-    return false;
+    return questions.filter(
+        (q: Question): boolean => q.type === "short_answer_question"
+    ).length === questions.length ||
+        questions.filter(
+            (q: Question): boolean => q.type === "short_answer_question"
+        ).length === 0
+        ? true
+        : false;
 }
 
 /***
