@@ -29,7 +29,8 @@ export function findQuestion(
     questions: Question[],
     id: number
 ): Question | null {
-    return null;
+    const foundQuestion = questions.find((q: Question): boolean => q.id === id);
+    return foundQuestion === undefined ? null : foundQuestion;
 }
 
 /**
@@ -37,7 +38,7 @@ export function findQuestion(
  * with the given `id`.
  */
 export function removeQuestion(questions: Question[], id: number): Question[] {
-    return [];
+    return questions.filter((q: Question): boolean => !(q.id === id));
 }
 
 /***
@@ -45,21 +46,30 @@ export function removeQuestion(questions: Question[], id: number): Question[] {
  * questions, as an array.
  */
 export function getNames(questions: Question[]): string[] {
-    return [];
+    return questions.map((q: Question): string => q.name);
 }
 
 /***
  * Consumes an array of questions and returns the sum total of all their points added together.
  */
 export function sumPoints(questions: Question[]): number {
-    return 0;
+    return questions.reduce(
+        (currentSum: number, q: Question): number => q.points + currentSum,
+        0
+    );
+    //return sum;
 }
 
 /***
  * Consumes an array of questions and returns the sum total of the PUBLISHED questions.
  */
 export function sumPublishedPoints(questions: Question[]): number {
-    return 0;
+    return questions
+        .filter((q: Question): boolean => q.published)
+        .reduce(
+            (currentSum: number, q: Question): number => q.points + currentSum,
+            0
+        );
 }
 
 /***
@@ -80,7 +90,17 @@ id,name,options,points,published
  * Check the unit tests for more examples!
  */
 export function toCSV(questions: Question[]): string {
-    return "";
+    return (
+        "id,name,options,points,published\n" +
+        questions
+            .map(
+                (q: Question): string =>
+                    `${q.id},${q.name},${
+                        q.options.length === 0 ? 0 : q.options.length
+                    },${q.points},${q.published}`
+            )
+            .join("\n")
+    );
 }
 
 /**
@@ -89,7 +109,14 @@ export function toCSV(questions: Question[]): string {
  * making the `text` an empty string, and using false for both `submitted` and `correct`.
  */
 export function makeAnswers(questions: Question[]): Answer[] {
-    return [];
+    return questions.map(
+        (q: Question): Answer => ({
+            questionId: q.id,
+            text: "",
+            submitted: false,
+            correct: false
+        })
+    );
 }
 
 /***
