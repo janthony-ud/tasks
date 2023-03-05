@@ -223,7 +223,26 @@ export function editOption(
     targetOptionIndex: number,
     newOption: string
 ): Question[] {
-    return questions.map(
+    //This is the only one I couldn't figure out how to do with ternary operations, so I resorted to if/else
+    //I left my attempt at it on lines 245-256, but I couldn't figure out how to fix the splice on line 251
+    //I think it has to do with the fact that splice returns the deleted portion of the array instead of the actually altered original array,
+    //but I couldn't figure out how to do assignment to a new array that would hold the original array within ternary syntax
+    return questions.map((q: Question): Question => {
+        if (q.id === targetId) {
+            let newOptions: string[];
+            if (targetOptionIndex === -1) {
+                newOptions = [...q.options, newOption];
+            } else {
+                newOptions = [...q.options];
+                newOptions.splice(targetOptionIndex, 1, newOption);
+            }
+            return { ...q, options: newOptions };
+        } else {
+            return q;
+        }
+    });
+    /*
+    const newQuestions = questions.map(
         (q: Question): Question => ({
             ...q,
             options:
@@ -234,6 +253,8 @@ export function editOption(
                     : q.options
         })
     );
+    return newQuestions;
+    */
 }
 
 /***
