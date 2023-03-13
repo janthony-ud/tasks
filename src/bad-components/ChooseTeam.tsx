@@ -16,7 +16,7 @@ export function ChooseTeam(): JSX.Element {
 
     function chooseMember(member: string) {
         if (!team.includes(member)) {
-            const newTeam = { ...team, member };
+            const newTeam = [...team, member];
             setTeam(newTeam);
         }
     }
